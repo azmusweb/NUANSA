@@ -3,326 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUANSA CMS 2026 - Hyper-Refract Edition</title>
+    <title>Dashboard ‹ NUANSA CMS Pro — WordPress</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
         
         :root {
-            --accent: #1a73e8;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --shadow-fluid: 0 20px 50px rgba(0, 0, 0, 0.05);
+            --wp-admin-bg: #f0f0f1;
+            --wp-sidebar-bg: #1d2327;
+            --wp-sidebar-text: #f0f0f1;
+            --wp-sidebar-hover: #72aee6;
+            --wp-accent: #2271b1;
+            --wp-accent-hover: #135e96;
+            --wp-border: #dcdcde;
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
-            background: radial-gradient(at top left, #f8fafc, #e2e8f0, #f1f5f9);
-            color: #1e293b; 
-            min-height: 100vh;
+            font-family: 'Open Sans', sans-serif; 
+            background-color: var(--wp-admin-bg);
+            color: #3c434a;
             overflow: hidden;
         }
 
-        .heading-font { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        /* Sidebar 2026: Fluid & Scrollable */
-        #main-sidebar {
-            width: 80px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            border-right: 1px solid var(--glass-border);
+        /* WordPress Sidebar Responsive */
+        #wp-admin-menu {
+            width: 160px;
+            background: var(--wp-sidebar-bg);
             display: flex;
             flex-direction: column;
             height: 100vh;
+            flex-shrink: 0;
             z-index: 100;
+            transition: all 0.3s;
         }
 
-        /* Scrollable Container Inside Sidebar */
-        .sidebar-nav-container {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            scrollbar-width: none; /* Firefox */
+        @media (max-width: 768px) {
+            #wp-admin-menu { transform: translateX(-100%); position: absolute; }
+            #wp-admin-menu.active { transform: translateX(0); }
         }
 
-        .sidebar-nav-container::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+        .wp-menu-item {
+            @apply flex items-center px-3 py-2 cursor-pointer transition-all text-[14px] relative;
+            color: var(--wp-sidebar-text);
         }
 
-        /* Menu Item: Refractive Style */
-        .sidebar-item { 
-            @apply relative flex items-center justify-center w-14 h-14 mb-4 rounded-2xl transition-all duration-500 cursor-pointer group;
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .wp-menu-item i { @apply mr-2 w-4 h-4 opacity-70; }
+        .wp-menu-item:hover { color: var(--wp-sidebar-hover); background: rgba(255,255,255,0.05); }
+        .wp-menu-active { background: var(--wp-accent); color: #fff !important; }
+
+        /* Top Bar */
+        #wp-toolbar {
+            @apply h-8 bg-[#1d2327] flex items-center justify-between px-4 text-[13px] text-gray-300 z-[110];
         }
 
-        .sidebar-item i {
-            @apply text-slate-500 transition-all duration-500;
-        }
+        /* Content Area */
+        .wp-content { flex: 1; overflow-y: auto; padding: 20px 40px; }
+        @media (max-width: 640px) { .wp-content { padding: 15px; } }
 
-        .sidebar-item:hover {
-            @apply shadow-2xl scale-110;
-            background: #ffffff;
-            border-color: var(--accent);
-        }
+        /* WordPress Styles */
+        .button-primary { @apply bg-[#2271b1] text-white px-4 py-1.5 rounded-[3px] text-[13px] font-semibold hover:bg-[#135e96] border border-[#2271b1]; }
+        .button-secondary { @apply bg-[#f6f7f7] text-[#2271b1] px-4 py-1.5 rounded-[3px] text-[13px] font-semibold hover:bg-[#f0f0f1] border border-[#2271b1]; }
+        .wp-card { @apply bg-white border border-gray-300 p-6 shadow-sm mb-6; }
+        
+        .wp-list-table { @apply w-full bg-white border border-gray-300 text-sm border-spacing-0; }
+        .wp-list-table th { @apply px-4 py-3 border-b border-gray-200 font-bold text-left bg-white; }
+        .wp-list-table td { @apply px-4 py-4 border-b border-gray-100 align-top; }
 
-        .sidebar-item:hover i {
-            @apply text-blue-600 scale-110;
-        }
-
-        .sidebar-active { 
-            @apply bg-white shadow-xl !important;
-            border: 1px solid var(--accent) !important;
-        }
-
-        .sidebar-active i {
-            @apply text-blue-600 !important;
-            filter: drop-shadow(0 0 8px rgba(26, 115, 232, 0.3));
-        }
-
-        /* 2026 Tooltip: Frosty Floating */
-        .sidebar-tooltip {
-            @apply absolute left-20 px-4 py-2 text-[11px] font-bold rounded-2xl opacity-0 pointer-events-none transition-all duration-500 whitespace-nowrap z-[110];
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            transform: translateX(-20px) scale(0.9);
-        }
-
-        .sidebar-item:hover .sidebar-tooltip {
-            @apply opacity-100;
-            transform: translateX(0) scale(1);
-        }
-
-        /* Glass Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            @apply rounded-[2.5rem] shadow-2xl;
-        }
-
-        .btn-primary-2026 {
-            @apply bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-blue-600 hover:-translate-y-1 active:scale-95 shadow-2xl transition-all duration-300;
-        }
-
-        /* Animation */
-        .fade-in-up {
-            animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Editor Mode */
+        .editor-container { @apply fixed inset-0 bg-white z-[200] flex flex-col; }
+        .post-title-input { @apply text-3xl font-bold border-none outline-none w-full py-4 mb-4; font-family: 'Georgia', serif; }
+        .meta-box { @apply bg-white border border-gray-300 mb-5; }
+        .meta-box-header { @apply px-3 py-2 border-b border-gray-200 font-bold text-[13px] bg-[#f6f7f7]; }
+        
+        input[type="text"], textarea, select { @apply border border-gray-400 rounded-[3px] p-2 text-sm focus:border-blue-500 outline-none; }
     </style>
 </head>
 <body>
 
-    <div class="flex h-screen overflow-hidden">
-        
-        <!-- Sidebar 2026 Fluid -->
-        <aside id="main-sidebar">
-            <!-- Top Branding -->
-            <div class="h-20 flex items-center justify-center shrink-0 border-b border-white/20">
-                <div class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                    <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
-                </div>
+    <!-- WordPress Top Toolbar -->
+    <div id="wp-toolbar">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleMobileMenu()" class="md:hidden"><i data-lucide="menu" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-2 hover:text-white cursor-pointer">
+                <i data-lucide="layout-grid" class="w-4 h-4 text-gray-500"></i> 
+                <span class="font-bold hidden sm:inline">NUANSA CMS Pro</span>
             </div>
+            <div class="hidden sm:flex items-center gap-1 hover:text-white cursor-pointer"><i data-lucide="plus" class="w-3 h-3"></i> Baru</div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="hidden sm:inline">Halo, Admin</span>
+            <div class="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center text-[10px]">A</div>
+        </div>
+    </div>
 
-            <!-- Scrollable Nav Section -->
-            <div class="sidebar-nav-container">
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav id="wp-admin-menu">
+            <div class="mt-2">
+                <div onclick="switchTab('stats')" id="nav-stats" class="wp-menu-item">
+                    <i data-lucide="gauge"></i> Dashboard
+                </div>
+                <div class="h-2"></div>
                 
-                <button onclick="switchTab('editor')" class="sidebar-item !bg-red-500 !border-red-400 group">
-                    <i data-lucide="plus" class="w-6 h-6 text-white group-hover:rotate-180"></i>
-                    <span class="sidebar-tooltip !bg-red-600">Buat Narasi Baru</span>
-                </button>
-
-                <div class="w-8 h-[1px] bg-slate-200 my-2 shrink-0"></div>
-
-                <div onclick="switchTab('posts')" id="nav-posts" class="sidebar-item sidebar-active">
-                    <i data-lucide="layout-template"></i>
-                    <span class="sidebar-tooltip">Koleksi Artikel</span>
+                <div onclick="switchTab('posts')" id="nav-posts" class="wp-menu-item wp-menu-active">
+                    <i data-lucide="pin"></i> Postingan
                 </div>
-                <div onclick="switchTab('stats')" id="nav-stats" class="sidebar-item">
-                    <i data-lucide="line-chart"></i>
-                    <span class="sidebar-tooltip">Analitik Performa</span>
+                <div onclick="switchTab('seo')" id="nav-seo" class="wp-menu-item">
+                    <i data-lucide="search"></i> SEO Tools
                 </div>
-                <div onclick="switchTab('comments')" id="nav-comments" class="sidebar-item">
-                    <i data-lucide="message-square-quote"></i>
-                    <span class="sidebar-tooltip">Diskusi Pembaca</span>
+                <div onclick="switchTab('theme')" id="nav-theme" class="wp-menu-item">
+                    <i data-lucide="palette"></i> Tampilan
                 </div>
-                <div onclick="switchTab('earnings')" id="nav-earnings" class="sidebar-item">
-                    <i data-lucide="coins"></i>
-                    <span class="sidebar-tooltip">Revenue Tracker</span>
+                <div onclick="switchTab('tutorial')" id="nav-tutorial" class="wp-menu-item">
+                    <i data-lucide="help-circle"></i> Tutorial & DB
                 </div>
-
-                <div class="w-8 h-[1px] bg-slate-200 my-2 shrink-0"></div>
-
-                <div onclick="switchTab('pages')" id="nav-pages" class="sidebar-item">
-                    <i data-lucide="sticky-note"></i>
-                    <span class="sidebar-tooltip">Halaman Statis</span>
+                <div onclick="switchTab('settings')" id="nav-settings" class="wp-menu-item">
+                    <i data-lucide="settings"></i> Pengaturan
                 </div>
-                <div onclick="switchTab('layout')" id="nav-layout" class="sidebar-item">
-                    <i data-lucide="puzzle"></i>
-                    <span class="sidebar-tooltip">Struktur Widget</span>
-                </div>
-                <div onclick="switchTab('theme')" id="nav-theme" class="sidebar-item">
-                    <i data-lucide="code-xml"></i>
-                    <span class="sidebar-tooltip">Source Code Tema</span>
-                </div>
-
-                <div class="w-8 h-[1px] bg-slate-200 my-2 shrink-0"></div>
-
-                <div onclick="switchTab('seo')" id="nav-seo" class="sidebar-item">
-                    <i data-lucide="fingerprint"></i>
-                    <span class="sidebar-tooltip">Identity & SEO</span>
-                </div>
-                <div onclick="switchTab('settings')" id="nav-settings" class="sidebar-item">
-                    <i data-lucide="cog"></i>
-                    <span class="sidebar-tooltip">Konfigurasi Inti</span>
-                </div>
-
-                <div class="w-8 h-[1px] bg-slate-200 my-2 shrink-0"></div>
-
-                <a id="nav-spreadsheet-link" href="#" target="_blank" class="sidebar-item">
-                    <i data-lucide="sheet" class="text-green-600"></i>
-                    <span class="sidebar-tooltip text-green-500">Spreadsheet DB</span>
-                </a>
-                <div onclick="switchTab('tutorial')" id="nav-tutorial" class="sidebar-item">
-                    <i data-lucide="help-circle"></i>
-                    <span class="sidebar-tooltip">Pusat Bantuan</span>
-                </div>
-
             </div>
+        </nav>
 
-            <!-- Bottom Action -->
-            <div class="h-24 flex flex-col items-center justify-center shrink-0 border-t border-white/20 gap-2">
-                <a href="/" target="_blank" class="sidebar-item !mb-0 !bg-blue-600 !text-white !w-12 !h-12">
-                    <i data-lucide="external-link" class="w-5 h-5 text-white"></i>
-                    <span class="sidebar-tooltip !bg-blue-600">Live Site</span>
-                </a>
-            </div>
-        </aside>
-
-        <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col min-w-0">
-            
-            <!-- Header 2026 -->
-            <header class="h-20 bg-white/40 backdrop-blur-xl border-b border-white/30 flex items-center justify-between px-10">
-                <div class="flex items-center gap-6">
-                    <h2 class="text-xl heading-font font-extrabold tracking-tight text-slate-800">
-                        NUANSA <span class="text-blue-600 opacity-50 font-normal">PRO</span>
-                    </h2>
-                </div>
+        <!-- Main Content -->
+        <main class="flex-1 h-[calc(100vh-32px)] overflow-hidden flex flex-col">
+            <div class="wp-content">
                 
-                <div class="flex items-center gap-8">
-                    <div class="hidden md:flex flex-col items-end">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Database Cloud</span>
-                        <span class="text-xs font-bold text-green-600 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Sinkronisasi Aktif
-                        </span>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-white shadow-xl border border-white/50 flex items-center justify-center">
-                        <i data-lucide="bell-ring" class="w-5 h-5 text-slate-400"></i>
+                <!-- VIEW: DASHBOARD / STATS -->
+                <div id="view-stats" class="hidden space-y-6">
+                    <h1 class="text-2xl font-normal text-[#1d2327]">Dashboard</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="wp-card flex flex-col items-center">
+                            <span class="text-gray-400 text-xs uppercase font-bold">Total Postingan</span>
+                            <span class="text-4xl font-light mt-2" id="stat-count">0</span>
+                        </div>
+                        <div class="wp-card flex flex-col items-center">
+                            <span class="text-gray-400 text-xs uppercase font-bold">Status Database</span>
+                            <span class="text-sm font-bold text-green-600 mt-2">TERHUBUNG</span>
+                        </div>
+                        <div class="wp-card flex flex-col items-center">
+                            <span class="text-gray-400 text-xs uppercase font-bold">Versi Sistem</span>
+                            <span class="text-sm font-bold mt-2">PRO v2.5</span>
+                        </div>
                     </div>
                 </div>
-            </header>
 
-            <!-- Scrollable Viewport -->
-            <div class="flex-1 overflow-y-auto p-10 custom-scroll">
-                
                 <!-- VIEW: POSTS -->
-                <div id="view-posts" class="max-w-6xl mx-auto space-y-8 fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-4xl font-extrabold text-slate-900 heading-font tracking-tight">Postingan</h1>
-                            <p class="text-slate-500 font-medium mt-1 text-lg">Kelola setiap kata yang Anda bagikan kepada dunia.</p>
-                        </div>
+                <div id="view-posts" class="space-y-4">
+                    <div class="flex items-end gap-4 mb-6">
+                        <h1 class="text-2xl font-normal text-[#1d2327]">Postingan</h1>
+                        <button onclick="switchTab('editor')" class="button-secondary">Tambah Baru</button>
                     </div>
+                    <table class="wp-list-table">
+                        <thead><tr><th class="w-8"><input type="checkbox"></th><th>Judul</th><th>Kategori</th><th>Tanggal</th></tr></thead>
+                        <tbody id="posts-tbody"></tbody>
+                    </table>
+                </div>
 
-                    <div class="glass-card overflow-hidden border-none shadow-fluid">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-900/5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
-                                    <th class="px-10 py-6">Judul Narasi</th>
-                                    <th class="px-10 py-6">Status</th>
-                                    <th class="px-10 py-6">Timeline</th>
-                                    <th class="px-10 py-6 text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="posts-tbody" class="divide-y divide-slate-100">
-                                <!-- Data via JS -->
-                            </tbody>
-                        </table>
+                <!-- VIEW: SEO TOOLS -->
+                <div id="view-seo" class="hidden space-y-6">
+                    <h1 class="text-2xl font-normal text-[#1d2327]">SEO Power Tools</h1>
+                    <div class="wp-card">
+                        <h3 class="font-bold mb-4">Analisis Meta Data Keseluruhan</h3>
+                        <p class="text-sm text-gray-600 mb-4">Pastikan setiap postingan memiliki meta deskripsi dan slug yang unik untuk peringkat maksimal.</p>
+                        <button class="button-primary">Scan Duplicate Slugs</button>
                     </div>
                 </div>
 
-                <!-- VIEW: EDITOR -->
-                <div id="view-editor" class="hidden fixed inset-0 bg-slate-50/90 backdrop-blur-3xl z-[200] flex flex-col animate-in fade-in duration-500">
-                    <nav class="h-20 bg-white/80 border-b border-slate-200 px-10 flex items-center justify-between">
-                        <div class="flex items-center gap-6 flex-1">
-                            <button onclick="switchTab('posts')" class="w-12 h-12 flex items-center justify-center hover:bg-white rounded-2xl shadow-sm transition-all border border-slate-200"><i data-lucide="chevron-left"></i></button>
-                            <input type="text" id="post-title" class="bg-transparent text-2xl font-extrabold outline-none w-full text-slate-800 placeholder:text-slate-300" placeholder="Masukkan Judul Masterpiece Anda...">
+                <!-- VIEW: THEME / TAMPILAN -->
+                <div id="view-theme" class="hidden space-y-6">
+                    <h1 class="text-2xl font-normal text-[#1d2327]">Tampilan (Template)</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="wp-card border-t-4 border-blue-500">
+                            <h3 class="font-bold">Template Aktif: NUANSA Clean</h3>
+                            <p class="text-xs text-gray-500 mt-2 italic">Didesain untuk kecepatan loading tinggi dan skor SEO 100.</p>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <button onclick="savePost('draft')" class="px-6 py-3 font-bold text-xs text-slate-500 uppercase tracking-widest hover:text-slate-900">Draf</button>
-                            <button onclick="savePost('publish')" class="btn-primary-2026 !bg-blue-600 shadow-blue-200">Terbitkan Sekarang</button>
+                        <div class="wp-card opacity-50 cursor-not-allowed">
+                            <h3 class="font-bold">Template: Magazine Pro</h3>
+                            <span class="text-[10px] bg-gray-200 px-2 py-0.5 rounded">Segera Hadir</span>
                         </div>
-                    </nav>
+                    </div>
+                </div>
 
-                    <div class="flex-1 flex overflow-hidden">
-                        <div class="flex-1 overflow-y-auto p-12">
-                            <div class="max-w-[900px] mx-auto bg-white rounded-[3rem] shadow-2xl min-h-[120vh] p-20 border border-slate-100">
-                                <textarea id="post-content" class="w-full h-full outline-none text-[19px] leading-relaxed text-slate-700 resize-none font-serif placeholder:text-slate-200" placeholder="Tuliskan isi artikel Anda di sini..."></textarea>
-                            </div>
-                        </div>
-                        <aside class="w-96 bg-white/40 border-l border-slate-200 p-10 space-y-10">
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Metadata Label</label>
-                                <textarea id="post-labels" class="w-full p-5 bg-white border border-slate-200 rounded-3xl text-sm outline-none focus:ring-4 focus:ring-blue-100" rows="3" placeholder="Kategori..."></textarea>
-                            </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Search Engine Snippet</label>
-                                <textarea id="post-meta" class="w-full p-5 bg-white border border-slate-200 rounded-3xl text-sm outline-none focus:ring-4 focus:ring-blue-100" rows="8" placeholder="Meta deskripsi..."></textarea>
-                            </div>
-                        </aside>
+                <!-- VIEW: TUTORIAL & DB -->
+                <div id="view-tutorial" class="hidden space-y-6">
+                    <h1 class="text-2xl font-normal text-[#1d2327]">Tutorial & Database</h1>
+                    
+                    <div class="wp-card bg-blue-50 border-l-4 border-blue-500">
+                        <h3 class="font-bold text-blue-800">1. Unduh Template Database</h3>
+                        <p class="text-sm text-blue-700 mt-2 mb-4">Anda harus menggunakan struktur kolom yang tepat agar CMS bisa membaca data.</p>
+                        <a href="https://docs.google.com/spreadsheets/d/1v5O_7rE6Hh_4j_I3qY2L09_E062F-K4U" target="_blank" class="button-primary inline-block">Buka & Duplikasi Template Sheets</a>
+                    </div>
+
+                    <div class="wp-card">
+                        <h3 class="font-bold">2. Cara Menghubungkan (POSHEET)</h3>
+                        <ol class="list-decimal ml-5 mt-4 text-sm space-y-3 text-gray-700">
+                            <li>Buka Spreadsheet Anda, klik <b>Ekstensi > Apps Script</b>.</li>
+                            <li>Copy-Paste kode GAS (Google Apps Script) khusus NUANSA CMS.</li>
+                            <li>Klik <b>Terapkan > Deployment Baru</b> (Pilih jenis: Aplikasi Web).</li>
+                            <li>Atur Akses ke <b>Siapa Saja (Anyone)</b>.</li>
+                            <li>Salin URL Web App dan masukkan ke menu <b>Pengaturan</b> di CMS ini.</li>
+                        </ol>
                     </div>
                 </div>
 
                 <!-- VIEW: SETTINGS -->
-                <div id="view-settings" class="hidden max-w-4xl mx-auto space-y-10 fade-in-up">
-                    <div class="glass-card p-16 space-y-12">
-                        <div class="flex items-center gap-6">
-                            <div class="w-20 h-20 bg-blue-600/10 rounded-[2rem] flex items-center justify-center text-blue-600">
-                                <i data-lucide="cloud-lightning" class="w-10 h-10"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-3xl font-extrabold heading-font tracking-tight">Koneksi Awan</h2>
-                                <p class="text-slate-500">Integrasikan antarmuka dengan Google Ecosystem Anda.</p>
-                            </div>
+                <div id="view-settings" class="hidden space-y-8 max-w-4xl">
+                    <h1 class="text-2xl font-normal text-[#1d2327]">Pengaturan</h1>
+                    <div class="wp-card space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <label class="text-sm font-bold flex items-center gap-2">
+                                <i data-lucide="link-2" class="w-4 h-4 text-blue-500"></i> GAS API URL
+                            </label>
+                            <input type="text" id="set-api-url" class="md:col-span-2 w-full" placeholder="https://script.google.com/...">
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-4">
+                            <label class="text-sm font-bold flex items-center gap-2">
+                                <i data-lucide="database" class="w-4 h-4 text-green-500"></i> Spreadsheet ID
+                            </label>
+                            <input type="text" id="set-sheet-id" class="md:col-span-2 w-full" placeholder="ID Unik Spreadsheet Anda">
+                        </div>
+                        <div class="flex justify-end pt-4">
+                            <button onclick="saveSettings()" class="button-primary">Simpan Pengaturan</button>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="grid gap-10">
-                            <div class="space-y-4">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">GAS Endpoint URL</label>
-                                <input type="text" id="set-api-url" class="w-full p-6 bg-white border border-slate-100 rounded-3xl text-sm font-mono text-blue-600 outline-none focus:ring-4 focus:ring-blue-500/5 shadow-inner" placeholder="https://script.google.com/...">
-                            </div>
-                            <div class="space-y-4">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Sheet Master ID</label>
-                                <input type="text" id="set-sheet-id" class="w-full p-6 bg-white border border-slate-100 rounded-3xl text-sm font-mono text-indigo-600 outline-none focus:ring-4 focus:ring-blue-500/5 shadow-inner" placeholder="Masukkan ID Spreadsheet">
+                <!-- VIEW: EDITOR -->
+                <div id="view-editor" class="hidden editor-container">
+                    <div class="editor-top">
+                        <div class="flex items-center gap-4">
+                            <button onclick="switchTab('posts')" class="p-1 hover:bg-gray-100 rounded text-gray-500"><i data-lucide="chevron-left"></i></button>
+                            <div class="flex items-center gap-2 border-l pl-4 ml-2">
+                                <div class="w-6 h-6 bg-[#1d2327] rounded-sm flex items-center justify-center text-white text-[10px]">N</div>
+                                <span class="text-[11px] font-bold text-gray-500 hidden sm:block">NUANSA PRO EDITOR</span>
                             </div>
                         </div>
-
-                        <div class="pt-10 flex justify-end">
-                            <button onclick="saveSettings()" class="btn-primary-2026">Sinkronisasi Database</button>
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <button onclick="savePost('draft')" class="button-secondary">Simpan Draf</button>
+                            <button onclick="savePost('publish')" class="button-primary">Terbitkan</button>
                         </div>
+                    </div>
+                    <div class="flex-1 flex overflow-hidden">
+                        <div class="flex-1 overflow-y-auto bg-white p-6 sm:p-20">
+                            <div class="max-w-[700px] mx-auto">
+                                <input type="text" id="post-title" class="post-title-input" placeholder="Tambahkan judul">
+                                <textarea id="post-content" class="w-full h-[60vh] border-none outline-none resize-none text-lg leading-relaxed" placeholder="Mulai menulis artikel HTML Anda di sini..."></textarea>
+                            </div>
+                        </div>
+                        <aside class="hidden lg:block w-[280px] border-l border-gray-200 overflow-y-auto bg-white p-4 space-y-4">
+                            <div class="meta-box">
+                                <div class="meta-box-header">SEO & Permalink</div>
+                                <div class="meta-box-body space-y-3">
+                                    <label class="text-[10px] font-bold uppercase text-gray-400">Slug</label>
+                                    <input type="text" id="post-slug" class="w-full text-xs" placeholder="judul-postingan-seo">
+                                    <label class="text-[10px] font-bold uppercase text-gray-400">Meta Deskripsi</label>
+                                    <textarea id="post-meta" class="w-full text-xs" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="meta-box">
+                                <div class="meta-box-header">Gambar Unggulan</div>
+                                <div class="meta-box-body">
+                                    <input type="text" id="post-image" class="w-full text-xs" placeholder="URL Gambar (Bebas Lisensi)">
+                                </div>
+                            </div>
+                            <div class="meta-box">
+                                <div class="meta-box-header">Label</div>
+                                <div class="meta-box-body">
+                                    <input type="text" id="post-labels" class="w-full text-xs" placeholder="Kategori, Label">
+                                </div>
+                            </div>
+                        </aside>
                     </div>
                 </div>
 
@@ -330,10 +280,9 @@
         </main>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-12 right-12 translate-y-32 opacity-0 transition-all duration-700 z-[300] bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl flex items-center gap-5 border border-white/10">
-        <div class="w-3 h-3 rounded-full bg-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.8)]"></div>
-        <span id="toast-text" class="text-[11px] font-black uppercase tracking-[0.3em]">PROSES SELESAI</span>
+    <!-- Notice -->
+    <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-500 z-[3000] bg-white border-l-4 border-green-500 shadow-xl px-6 py-3 flex items-center gap-4">
+        <span id="toast-text" class="text-sm font-semibold text-gray-700"></span>
     </div>
 
     <script>
@@ -347,23 +296,22 @@
             if (SCRIPT_URL) fetchData();
         });
 
+        function toggleMobileMenu() {
+            document.getElementById('wp-admin-menu').classList.toggle('active');
+        }
+
         function switchTab(tab) {
             currentPostId = null;
             document.querySelectorAll('main div[id^="view-"]').forEach(d => d.classList.add('hidden'));
-            document.querySelectorAll('.sidebar-item').forEach(a => a.classList.remove('sidebar-active'));
+            document.querySelectorAll('.wp-menu-item').forEach(a => a.classList.remove('wp-menu-active'));
             
             const view = document.getElementById('view-' + tab);
-            if(view) {
-                view.classList.remove('hidden');
-                // Re-trigger animation
-                view.style.animation = 'none';
-                view.offsetHeight; /* trigger reflow */
-                view.style.animation = null;
-            }
+            if(view) view.classList.remove('hidden');
             
             const nav = document.getElementById('nav-' + tab);
-            if(nav) nav.classList.add('sidebar-active');
-
+            if(nav) nav.classList.add('wp-menu-active');
+            
+            if(window.innerWidth < 768) toggleMobileMenu();
             if(tab === 'posts' && SCRIPT_URL) fetchData();
         }
 
@@ -372,38 +320,30 @@
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
                 posts = data.posts || [];
+                document.getElementById('stat-count').innerText = posts.length;
                 renderPostsTable();
-            } catch(e) { console.error("Network Error:", e); }
+            } catch(e) { console.error(e); }
         }
 
         function renderPostsTable() {
             const tbody = document.getElementById('posts-tbody');
             if(posts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-32 text-center text-slate-300 font-medium italic">Menghubungkan ke server awan...</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="py-20 text-center text-gray-400 italic">Belum ada data. Hubungkan Spreadsheet atau buat baru.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = posts.map((p, idx) => `
-                <tr class="group hover:bg-blue-50/50 transition-all duration-300">
-                    <td class="px-10 py-8">
-                        <div class="flex flex-col cursor-pointer" onclick="editPost('${p.id}')">
-                            <span class="text-lg font-bold text-slate-800 group-hover:text-blue-600 transition-colors">${p.title}</span>
-                            <span class="text-[10px] text-slate-400 mt-1 uppercase tracking-tighter">${p.labels || 'Tanpa Label'}</span>
+            tbody.innerHTML = posts.map(p => `
+                <tr class="group hover:bg-[#f6f7f7]">
+                    <td class="px-4 py-4"><input type="checkbox"></td>
+                    <td class="px-4 py-4">
+                        <span class="font-bold text-[#2271b1] cursor-pointer" onclick="editPost('${p.id}')">${p.title}</span>
+                        <div class="text-[11px] mt-1 opacity-0 group-hover:opacity-100 flex gap-2 text-gray-400">
+                            <span class="text-[#2271b1] cursor-pointer" onclick="editPost('${p.id}')">Sunting</span> | <span class="text-red-600">Sampah</span>
                         </div>
                     </td>
-                    <td class="px-10 py-8">
-                        <span class="text-[9px] font-black px-4 py-1.5 rounded-full border ${p.status === 'PUBLISH' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-orange-50 text-orange-600 border-orange-200'} uppercase tracking-widest">
-                            ${p.status}
-                        </span>
-                    </td>
-                    <td class="px-10 py-8 text-xs font-bold text-slate-400">${p.date}</td>
-                    <td class="px-10 py-8 text-right">
-                        <button onclick="editPost('${p.id}')" class="w-12 h-12 inline-flex items-center justify-center bg-white rounded-2xl border border-slate-100 shadow-sm text-slate-400 hover:text-blue-600 hover:shadow-xl transition-all">
-                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                        </button>
-                    </td>
+                    <td class="px-4 py-4 text-xs text-gray-500">${p.labels || '—'}</td>
+                    <td class="px-4 py-4 text-xs text-gray-400">${p.date}</td>
                 </tr>
             `).join('');
-            lucide.createIcons();
         }
 
         function editPost(id) {
@@ -415,10 +355,12 @@
             document.getElementById('post-content').value = p.content;
             document.getElementById('post-labels').value = p.labels || '';
             document.getElementById('post-meta').value = p.meta || '';
+            document.getElementById('post-slug').value = p.slug || '';
+            document.getElementById('post-image').value = p.image || '';
         }
 
         async function savePost(status) {
-            if(!SCRIPT_URL) return showToast("API URL DIPERLUKAN");
+            if(!SCRIPT_URL) return showToast("API URL kosong!");
             const payload = {
                 action: currentPostId ? 'update' : 'insert',
                 id: currentPostId || Date.now().toString(),
@@ -426,12 +368,14 @@
                 content: document.getElementById('post-content').value,
                 labels: document.getElementById('post-labels').value,
                 meta: document.getElementById('post-meta').value,
+                slug: document.getElementById('post-slug').value || document.getElementById('post-title').value.toLowerCase().replace(/ /g, '-'),
+                image: document.getElementById('post-image').value,
                 date: new Date().toLocaleDateString('id-ID'),
                 status: status === 'publish' ? 'PUBLISH' : 'DRAF'
             };
-            showToast("TRANSMISI DATA...");
+            showToast("Memproses...");
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            showToast("DATA TERSEMENTARA");
+            showToast("Berhasil Disimpan!");
             setTimeout(() => switchTab('posts'), 1000);
         }
 
@@ -439,7 +383,7 @@
             localStorage.setItem('nuansa_script_url', document.getElementById('set-api-url').value);
             localStorage.setItem('nuansa_sheet_id', document.getElementById('set-sheet-id').value);
             SCRIPT_URL = document.getElementById('set-api-url').value;
-            showToast("SISTEM DIPERBARUI");
+            showToast("Pengaturan Disimpan");
             applySavedSettings();
             if(SCRIPT_URL) fetchData();
         }
@@ -454,8 +398,12 @@
         function showToast(m) {
             const t = document.getElementById('toast');
             document.getElementById('toast-text').innerText = m;
-            t.classList.remove('translate-y-32', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3000);
+            t.classList.remove('-translate-y-20', 'opacity-0');
+            t.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                t.classList.add('-translate-y-20', 'opacity-0');
+                t.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
         }
     </script>
 </body>
